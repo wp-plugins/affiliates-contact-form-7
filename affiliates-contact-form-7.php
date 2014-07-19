@@ -23,10 +23,10 @@
  * Description: Integrates Affiliates, Affiliates Pro and Affiliates Enterprise with Contact Form 7
  * Author: itthinx
  * Author URI: http://www.itthinx.com/
- * Version: 3.0.1
+ * Version: 3.1.0
  * License: GPLv3
  */
-if ( !defined( 'AFF_CF7_PLUGIN_DOMAIN' )) {
+if ( !defined( 'AFF_CF7_PLUGIN_DOMAIN' ) ) {
 	define( 'AFF_CF7_PLUGIN_DOMAIN', 'affiliates-contact-form-7' );
 }
 

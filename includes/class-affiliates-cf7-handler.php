@@ -73,11 +73,15 @@ class Affiliates_CF7_Handler {
 	}
 
 	/**
-	 * This hook is called from WPCF7_ContactForm::mail(...)
+	 * From CF7 3.9, this hook is called from WPCF7_Submission::mail(...) and
+	 * the parameter is NOT passed by reference.
+	 * 
+	 * Before CF7 3.9, this hook is called from WPCF7_ContactForm::mail(...)
+	 * and the parameter passed by reference.
 	 *
-	 * @param WPCF7_ContactForm &$form
+	 * @param WPCF7_ContactForm $form
 	 */
-	public static function wpcf7_before_send_mail( WPCF7_ContactForm &$form ) {
+	public static function wpcf7_before_send_mail( WPCF7_ContactForm $form ) {
 
 		global $wpdb, $affiliates_db;
 
@@ -87,13 +91,15 @@ class Affiliates_CF7_Handler {
 		$excluded_form_ids = isset( $options[Affiliates_CF7::EXCLUDED_FORMS] ) ? $options[Affiliates_CF7::EXCLUDED_FORMS] : array();
 
 		$valid_form = true;
+		$form_id = method_exists( 'WPCF7_ContactForm', 'id' ) ? $form->id() : $form->id;
+		$form_title = method_exists( 'WPCF7_ContactForm', 'title' ) ? $form->title() : $form->title;
 		if ( count( $included_form_ids ) > 0 ) {
-			if ( !in_array( $form->id, $included_form_ids ) ) {
+			if ( !in_array( $form_id, $included_form_ids ) ) {
 				$valid_form = false;
 			}
 		}
 		if ( count( $excluded_form_ids ) > 0 ) {
-			if ( in_array( $form->id, $excluded_form_ids ) ) {
+			if ( in_array( $form_id, $excluded_form_ids ) ) {
 				$valid_form = false;
 			}
 		}
@@ -102,15 +108,28 @@ class Affiliates_CF7_Handler {
 		}
 
 		// only record actual form fields of interest
-		$scanned_fields = $form->scanned_form_tags;
+		if ( method_exists( 'WPCF7_ShortcodeManager', 'get_instance' ) ) {
+			$manager = WPCF7_ShortcodeManager::get_instance();
+			$scanned_fields = $manager->scan_shortcode( $form->prop( 'form' ) );
+		} else {
+			$scanned_fields = $form->scanned_form_tags;
+		}
 
 		$fields = array();
 		foreach ( $scanned_fields as $field ) {
 			$fields[$field['name']] = $field;
 		}
 
+		if ( class_exists( 'WPCF7_Submission' ) ) {
+			$submission = WPCF7_Submission::get_instance();
+			$posted_data = $submission->get_posted_data();
+			$uploaded_files = $submission->uploaded_files();
+		} else {
+			$posted_data = $form->posted_data;
+			$uploaded_files = $form->uploaded_files;
+		}
+
 		$data = array();
-		$posted_data = $form->posted_data;
 		foreach( $posted_data as $key => $value ) {
 			if ( key_exists( $key, $fields ) ) {
 				$v = '';
@@ -177,7 +196,6 @@ class Affiliates_CF7_Handler {
 			}
 		}
 
-		$uploaded_files = $form->uploaded_files;
 		foreach ( $uploaded_files as $key => $value ) {
 			if ( key_exists( $key, $fields ) ) {
 				$data[$key] = array(
@@ -191,7 +209,7 @@ class Affiliates_CF7_Handler {
 		// can't get_the_ID() here
 		$post_id = isset( $_GET['page_id'] ) ? intval( $_GET['page_id'] ) : 0;
 
-		$description = !empty( $form->title ) ? $form->title : 'Contact Form 7';
+		$description = !empty( $form_title ) ? $form_title : 'Contact Form 7';
 		$base_amount = null;
 		$amount = null;
 		$currency = isset( $options[Affiliates_CF7::CURRENCY] ) ? $options[Affiliates_CF7::CURRENCY] : Affiliates_CF7::DEFAULT_CURRENCY;
