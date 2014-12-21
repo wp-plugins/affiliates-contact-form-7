@@ -211,6 +211,9 @@ class Affiliates_CF7_Admin {
 		$output .= '<input style="width:40em" name="' . Affiliates_CF7::PETITION_FORMS . '" type="text" value="' . esc_attr( implode( ",", $petition_forms ) ) . '" />';
 		$output .= '</label>';
 		$output .= '</p>';
+		$output .= '<p class="description">';
+		$output .= __( 'Petition forms allow affiliates to submit referrals directly. Include form ids of those forms which should credit referrals directly to the affiliate who submits the form.', AFF_CF7_PLUGIN_DOMAIN );
+		$output .= '</p>';
 
 		$output .= '<h3>' . __( 'Referral Rate', AFF_CF7_PLUGIN_DOMAIN ) . '</h3>';
 		if ( class_exists( 'Affiliates_Referral' ) ) {
