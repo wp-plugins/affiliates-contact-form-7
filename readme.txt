@@ -3,7 +3,7 @@ Contributors: itthinx
 Donate link: http://www.itthinx.com/plugins/affiliates-contact-form-7
 Tags: ads, advertising, affiliate, affiliate, marketing, affiliate plugin, affiliate tool, affiliates, affiliates plugin, bucks, cf7, contact form, Contact Form 7, CRM, e-commerce, earn money, integration, lead, lead tracking, leads, link, marketing, money, online, sale, order, partner, referral, referral, links, referrer, sales, shopping cart, site, team, teams, track, transaction, video, WordPress
 Requires at least: 3.5.1
-Tested up to: 3.9.1
+Tested up to: 4.1
 Stable tag: 3.1.0
 License: GPLv3
 
@@ -107,6 +107,10 @@ See also: [Affiliates Contact Form 7 Integration](http://www.itthinx.com/plugins
 
 == Changelog ==
 
+= 3.2.0 =
+* Added petition forms feature.
+* Tested for WordPress 4.1 compatibility.
+
 = 3.1.0 =
 * Updated for Contact Form 7 3.9 compatibility.
 
@@ -117,6 +121,9 @@ See also: [Affiliates Contact Form 7 Integration](http://www.itthinx.com/plugins
 * WordPress 3.6.1 compatible release
 
 == Upgrade Notice ==
+
+= 3.2.0 =
+* New petition forms feature and WordPress 4.1 compatibility.
 
 = 3.1.0 =
 * Updated for Contact Form 7 3.9 compatibility.

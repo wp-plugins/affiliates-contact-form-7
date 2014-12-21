@@ -89,6 +89,7 @@ class Affiliates_CF7_Handler {
 
 		$included_form_ids = isset( $options[Affiliates_CF7::INCLUDED_FORMS] ) ? $options[Affiliates_CF7::INCLUDED_FORMS] : array();
 		$excluded_form_ids = isset( $options[Affiliates_CF7::EXCLUDED_FORMS] ) ? $options[Affiliates_CF7::EXCLUDED_FORMS] : array();
+		$petition_form_ids = isset( $options[Affiliates_CF7::PETITION_FORMS] ) ? $options[Affiliates_CF7::PETITION_FORMS] : array();
 
 		$valid_form = true;
 		$form_id = method_exists( 'WPCF7_ContactForm', 'id' ) ? $form->id() : $form->id;
@@ -105,6 +106,14 @@ class Affiliates_CF7_Handler {
 		}
 		if ( !$valid_form ) {
 			return;
+		}
+
+		// check if this is a form that admits petitions
+		$petition_form = false;
+		if ( count( $petition_form_ids ) > 0 ) {
+			if ( in_array( $form_id, $petition_form_ids ) ) {
+				$petition_form = true;
+			}
 		}
 
 		// only record actual form fields of interest
@@ -237,16 +246,33 @@ class Affiliates_CF7_Handler {
 			}
 		}
 
+		$affiliate_id = null;
+		if ( $petition_form ) {
+			if ( is_user_logged_in() ) {
+				$user_id = get_current_user_id();
+				$affiliate_ids = affiliates_get_user_affiliate( $user_id );
+				$affiliate_id = array_shift( $affiliate_ids );
+			}
+		}
+
 		if ( class_exists( 'Affiliates_Referral_WordPress' ) ) {
 			$r = new Affiliates_Referral_WordPress();
-			$affiliate_id = $r->evaluate( $post_id, $description, $data, $base_amount, $amount, $currency, null, Affiliates_CF7::REFERRAL_TYPE );
+			if ( !$affiliate_id ) {
+				$affiliate_id = $r->evaluate( $post_id, $description, $data, $base_amount, $amount, $currency, null, Affiliates_CF7::REFERRAL_TYPE );
+			} else {
+				$r->add_referrals( array( $affiliate_id ), $post_id, $description, $data, $base_amount, $amount, $currency, null, Affiliates_CF7::REFERRAL_TYPE );
+			}
 		} else {
 			$options = get_option( Affiliates_CF7::PLUGIN_OPTIONS , array() );
 			$referral_rate  = isset( $options[Affiliates_CF7::REFERRAL_RATE] ) ? $options[Affiliates_CF7::REFERRAL_RATE] : Affiliates_CF7::REFERRAL_RATE_DEFAULT;
 			if ( $base_amount !== null ) {
 				$amount = round( floatval( $referral_rate ) * floatval( $base_amount ), AFFILIATES_REFERRAL_AMOUNT_DECIMALS );
 			}
-			$affiliate_id = affiliates_suggest_referral( $post_id, $description, $data, $amount, $currency, null, Affiliates_CF7::REFERRAL_TYPE );
+			if ( !$affiliate_id ) {
+				$affiliate_id = affiliates_suggest_referral( $post_id, $description, $data, $amount, $currency, null, Affiliates_CF7::REFERRAL_TYPE );
+			} else {
+				affiliates_add_referral( $affiliate_id, $post_id, $description, $data, $amount, $currency, null, Affiliates_CF7::REFERRAL_TYPE );
+			}
 		}
 
 	}

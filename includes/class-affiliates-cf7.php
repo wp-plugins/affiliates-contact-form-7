@@ -89,6 +89,7 @@ class Affiliates_CF7 {
 	// forms
 	const INCLUDED_FORMS = 'included_forms';
 	const EXCLUDED_FORMS = 'excluded_forms';
+	const PETITION_FORMS = 'petition_forms';
 
 	const USE_FORM_AMOUNT = 'use_form_amount';
 	const DEFAULT_USE_FORM_AMOUNT = false;

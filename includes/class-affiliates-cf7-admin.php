@@ -116,6 +116,22 @@ class Affiliates_CF7_Admin {
 				}
 				$options[Affiliates_CF7::EXCLUDED_FORMS] = $exclude_form_ids;
 
+				$ids = "";
+				$petition_form_ids = array();
+				if ( !empty( $_POST[Affiliates_CF7::PETITION_FORMS] ) ) {
+					$ids = trim ( $_POST[Affiliates_CF7::PETITION_FORMS] );
+					if ( !empty( $ids ) ) {
+						$ids = explode( ",", $ids );
+						foreach ( $ids as $id ) {
+							$id = intval( trim( $id ) );
+							if ( $id >= 0 && !in_array( $id, $petition_form_ids ) ) {
+								$petition_form_ids[] = $id;
+							}
+						}
+					}
+				}
+				$options[Affiliates_CF7::PETITION_FORMS] = $petition_form_ids;
+
 				if ( isset( $_POST[Affiliates_CF7::CURRENCY] ) && in_array( $_POST[Affiliates_CF7::CURRENCY], Affiliates_CF7::$supported_currencies ) ) {
 					$options[Affiliates_CF7::CURRENCY] = $_POST[Affiliates_CF7::CURRENCY];
 				}
@@ -139,6 +155,7 @@ class Affiliates_CF7_Admin {
 
 		$included_forms    = isset( $options[Affiliates_CF7::INCLUDED_FORMS] ) ? $options[Affiliates_CF7::INCLUDED_FORMS] : array();
 		$excluded_forms    = isset( $options[Affiliates_CF7::EXCLUDED_FORMS] ) ? $options[Affiliates_CF7::EXCLUDED_FORMS] : array();
+		$petition_forms    = isset( $options[Affiliates_CF7::PETITION_FORMS] ) ? $options[Affiliates_CF7::PETITION_FORMS] : array();
 		$currency          = isset( $options[Affiliates_CF7::CURRENCY] ) ? $options[Affiliates_CF7::CURRENCY] : Affiliates_CF7::DEFAULT_CURRENCY;
 
 		$use_form_amount      = isset( $options[Affiliates_CF7::USE_FORM_AMOUNT] ) ? $options[Affiliates_CF7::USE_FORM_AMOUNT] : Affiliates_CF7::DEFAULT_USE_FORM_AMOUNT;
@@ -183,6 +200,15 @@ class Affiliates_CF7_Admin {
 		$output .= __( 'Excluded form ids', AFF_CF7_PLUGIN_DOMAIN );
 		$output .= ' ';
 		$output .= '<input style="width:40em" name="' . Affiliates_CF7::EXCLUDED_FORMS . '" type="text" value="' . esc_attr( implode( ",", $excluded_forms ) ) . '" />';
+		$output .= '</label>';
+		$output .= '</p>';
+
+		$output .= '<h4>' . __( 'Petition forms', AFF_CF7_PLUGIN_DOMAIN ) . '</h4>';
+		$output .= '<p>';
+		$output .= '<label>';
+		$output .= __( 'Petition form ids', AFF_CF7_PLUGIN_DOMAIN );
+		$output .= ' ';
+		$output .= '<input style="width:40em" name="' . Affiliates_CF7::PETITION_FORMS . '" type="text" value="' . esc_attr( implode( ",", $petition_forms ) ) . '" />';
 		$output .= '</label>';
 		$output .= '</p>';
 
