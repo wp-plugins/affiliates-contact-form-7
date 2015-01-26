@@ -229,17 +229,17 @@ class Affiliates_CF7_Handler {
 
 		// check form for value/currency?
 		if ( $use_form_base_amount ) {
-			if ( isset( $data['base-amount']['value'] ) && is_numeric( $data['base-amount']['value'] ) ) {
+			if ( isset( $data['base-amount'] ) && isset( $data['base-amount']['value'] ) && is_numeric( $data['base-amount']['value'] ) ) {
 				$base_amount = bcadd( "0", $data['base-amount']['value'] );
 			}
 		}
 		if ( $use_form_amount ) {
-			if ( isset( $data['amount']['value'] ) && is_numeric( $data['amount']['value'] ) ) {
+			if ( isset( $data['amount'] ) && isset( $data['amount']['value'] ) && is_numeric( $data['amount']['value'] ) ) {
 				$amount = bcadd( "0", $data['amount']['value'] );
 			}
 		}
 		if ( $use_form_currency ) {
-			if ( isset( $data['currency']['value'] ) ) {
+			if ( isset( $data['currency'] ) && isset( $data['currency']['value'] ) ) {
 				if ( in_array( $data['currency']['value'], Affiliates_CF7::$supported_currencies ) ) {
 					$currency = $data['currency']['value'];
 				}
@@ -252,6 +252,17 @@ class Affiliates_CF7_Handler {
 				$user_id = get_current_user_id();
 				$affiliate_ids = affiliates_get_user_affiliate( $user_id );
 				$affiliate_id = array_shift( $affiliate_ids );
+			}
+		}
+
+		if ( isset( $data['affiliate_id'] ) && !empty( $data['affiliate_id']['value'] ) && is_numeric( $data['affiliate_id']['value'] ) ) {
+			$affiliate_id = intval( $data['affiliate_id']['value'] );
+		}
+
+		if ( isset( $data['affiliate_login'] ) && !empty( $data['affiliate_login']['value'] ) ) {
+			if ( $user = get_user_by( 'login', $data['affiliate_login']['value'] ) ) {
+				$affiliate_ids = affiliates_get_user_affiliate( $user->ID );
+				$affiliate_id  = array_shift( $affiliate_ids );
 			}
 		}
 

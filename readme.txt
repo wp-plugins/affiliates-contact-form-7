@@ -107,6 +107,9 @@ See also: [Affiliates Contact Form 7 Integration](http://www.itthinx.com/plugins
 
 == Changelog ==
 
+= 3.3.0 =
+* Added support for a affiliate_id or affiliate_login field to allow form submitters to indicate the referring affiliate's ID or user login.
+
 = 3.2.0 =
 * Added petition forms feature.
 * Tested for WordPress 4.1 compatibility.
@@ -121,6 +124,9 @@ See also: [Affiliates Contact Form 7 Integration](http://www.itthinx.com/plugins
 * WordPress 3.6.1 compatible release
 
 == Upgrade Notice ==
+
+= 3.3.0 =
+* Feature addition: Forms can now contain an affiliate_id or affiliate_login field which is interpreted as the referring affiliate's ID or user login.
 
 = 3.2.0 =
 * New petition forms feature and WordPress 4.1 compatibility.
